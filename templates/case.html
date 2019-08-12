@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+{{ case.name }}
+{% endblock %}
+
+{% block active_bread %}{{ case.name }}{% endblock %}
+
+{% block body %}
+<!-- case show -->
+<section id="case">
+  <div class="container">
+    <div class="col-sm-9 case_details">
+        <p class="case_title center" style="color:red;">{{ case.title }}</p>
+        <div class="conauthor" style="margin-top: 10px;">[作者:{{ case.author }}]&nbsp;&nbsp;&nbsp;  [日期:{{case.add_date}}]&nbsp;&nbsp;&nbsp;   [热度:{{case.views }}]</div>
+        <div style="margin-top: 20px; margin-bottom:20px;">
+               {% autoescape off %}
+                {{ case.desc }}
+                {% endautoescape %}
+        </div>
+        <div  style=" margin-top:50px; margin-bottom:10px;">
+           <span style="font-weight:bold;">关键字：</span> {% for keyword in product.keywords.all %}
+                        {{ keyword.name }} ,
+                    {% endfor %}
+        </div>
+        <div>
+            上一篇：{% if pre_case %}
+            <a href="{% url 'products:case_detail' pre_case.id %}">{{ pre_case.title }}</a>
+            {% else %}
+             没有了
+            {% endif %}
+        </div>
+        <div>
+            下一篇：{% if next_case %}
+            <a href="{% url 'products:case_detail' next_case.id %}">{{next_case.title}}</a>
+            {% else %}
+             没有了
+            {% endif %}
+        </div>
+    </div>
+    <div class="col-sm-3">
+      <p class="case_title">Hot products</p>
+      <ul>
+          {% for hot in hots %}
+               <li>
+          <a href="{% url 'products:product_detail' hot.id %}">
+            <div class="case_cp"><a href=""><img src="{{MEDIA_URL}}{{ hot.image}}" alt=""></a> </div>
+                <p>{{ hot.name }}</p>
+          </a>
+        </li>
+          {% endfor %}
+      </ul>
+      <div class="contact_all">
+         <p>电话:<span>{{ side_tel }}</span></p>
+        <p>邮箱:<span>{{side_email}}</span></p>
+        <img src="{% static 'assets/img/case_13.png' %}" alt="">
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,255 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %} 宋通首页 {% endblock %}</title>
+    <!-- Bootstrap -->
+    <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/index.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/iconfont.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/demo.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/base.css' %}" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+  <!-- 头部 -->
+  <div class="top visible-lg">
+    <div class="container text-right">
+      <ul class="list-inline">
+        <li><i class="icon iconfont f16">&#xea42;</i> 电话:{{top_tel}}</li>
+        <li><i class="icon iconfont f16">&#xea63;</i> 邮箱:{{top_email}}</li>
+      </ul>
+    </div>
+  </div>
+  <!-- 导航 -->
+  <!-- 导航 -->
+<nav class="navbar navbar-default navbar_style nomargin">
+<div class="container">
+<!--小屏幕导航按钮和logo -->
+<div class="navbar-header">
+<a href="{% url 'index' %}" class="navbar-brand visible-xs">开封宋通</a>
+<button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+<span class="icon-bar"></span>
+</button>
+</div>
+<!--小屏幕导航按钮和logo -->
+<!-- 大屏幕显示导航 -->
+<div class="navbar-collapse collapse">
+<a class="visible-lg" href="#"><img class="nav_logo" src="{% static 'images/company/logo.png' %}" alt=""></a>
+<ul class="nav navbar-nav navbar-right">
+<li  {% if request.path == '/' %}class="active_nav" {% endif %}><a class="nav_title" href="{% url 'index' %} ">首页</a></li>
+<li {% if request.path|slice:'9' == '/products' %}class="active_nav"{% endif %}><a class="nav_title" href="{% url 'products:product_list' %} ">产品中心</a></li>
+<li {% if request.path|slice:'6' == '/cases' %}class="active_nav"{% endif %}><a class="nav_title" href="{% url 'products:case_list' %}">技术支持</a></li>
+<li {% if request.path|slice:'10' == '/contactus' %}class="active_nav"{% endif %}><a class="nav_title" href="{% url 'company:contactus' %}">联系我们</a></li>
+</ul>
+</div>
+<!-- 大屏幕显示 导航 --> 
+</div>
+</nav>
+<!-- 导航结束 -->
+<!-- banner -->  
+<div class="banner">
+			<div class="wp">
+				<div class="fl">
+					<div class="imgslide">
+						<ul class="imgs">
+                            {% for banner in all_banners %}
+                            <li>
+                                    <a href="{% url 'products:product_detail' banner.product.id %}">
+                                        <img width="1200" height="400" src="{{ MEDIA_URL }}{{ banner.image }}" />
+                                    </a>
+                                </li>
+                            {% endfor %}
+						</ul>
+					</div>
+					<div class="unslider-arrow prev"></div>
+					<div class="unslider-arrow next"></div>
+				</div>
+				</div>
+			</div>
+ <section id="search">
+     <div class="container">
+                <div class="wp">
+                    <ol class="breadcrumb">位置:
+          <li><a href="{% url 'index' %}">首页</a></li>
+          <li class="active">{% block active_bread %}{% endblock %}</li>
+        </ol>
+                    <div class="searchbox fr" >
+                        <div class="selectContainer fl">
+                            <span class="selectOption" id="jsSelectOption" data-value="{% if type %} {{ type }} {% else %}product{% endif %}">
+                              {% if type %}
+                                 {% if type == 'category' %}
+                                    类别
+                                 {% endif %}
+                                 {% if type == 'product' %}
+                                    产品
+                                 {% endif %}
+                                 {% if type == 'case' %}
+                                    技术支持
+                                 {% endif %}
+                              {% else %}
+                                产品
+                              {% endif %}
+                            </span>
+                            <ul class="selectMenu" id="jsSelectMenu">
+                                <li data-value="category">类别</li>
+                                <li data-value="product">产品</li>
+                                <li data-value="case">技术支持</li>
+                            </ul>
+                        </div>
+                        <input id="search_keywords" class="fl" type="text" value="{% if keywords %}{{ keywords }}{% endif %}" placeholder="请输入搜索内容" >
+                        <img class="search_btn fr" id="jsSearchBtn" src="{% static 'assets/img/search_btn.png' %}">
+                    </div>
+                </div>
+            </div>
+   </section>
+  {% block body %} {% endblock %}
+<!-- footer -->
+<section id="footer">
+  {% block footer %}
+  <div class="container">
+    <div class="col-sm-6 fl6">
+      {% if request.path|slice:'10' == '/contactus' %}
+      {% else %}
+       <p>用户留言：</p>
+      <form action="" id="jsStayForm">
+        {% csrf_token %}
+        <div class="form-group has-feedback footer_style">
+          <input type="text" name="name" class="form-control" required placeholder="你的名字">
+          <i class="icon iconfont form-control-feedback">&#xea59;</i>
+        </div>
+        <div class="form-group has-feedback footer_style">
+          <input type="text" name="email" class="form-control" required placeholder="你的邮箱">
+          <i class="icon iconfont form-control-feedback">&#xea63;</i>
+        </div>
+        <div class="form-group has-feedback footer_style">
+          <input type="text"  name="mobile" class="form-control" required placeholder="你的联系方式">
+          <i class="icon iconfont form-control-feedback">&#xea44;</i>
+        </div>
+        <div class="form-group has-feedback footer_style">
+          <textarea class="form-control" name="message" rows="3"  required placeholder="你咨询的内容"></textarea>
+          <i class="icon iconfont form-control-feedback">&#xea5f;</i>
+        </div>
+        <p class="error company-tips" id="jsCompanyTips" style="color:red;"></p>
+        <button type="submit" class="btn pull-right" id="jsStayBtn">发送内容</button>
+      </form>
+      {% endif %}
+    </div>
+    <div class="col-sm-6 fr6">
+      <p>联系我们</p>
+      <ul class="list-unstyled mt30">
+        {% for k,v in other_contacts.items %}
+           <li>{{k}}: {{v}}</li>
+        {% endfor %}
+        <li>
+          <ul class="list-inline">
+            <li><a href="#"><img src="{% static 'assets/img/qq.png' %}" alt=""></a></li>
+            <li><a href="#"><img src="{% static 'assets/img/message.png' %}" alt=""></a></li>
+            <li><a href="#"><img src="{% static 'assets/img/phone.png' %}" alt=""></a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+  {% endblock %}
+</section>
+
+
+
+<!-- 开始写代码 -->
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="{% static 'assets/js/jquery-3.1.1.min.js' %}"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'assets/js/unslider.js' %}" type="text/javascript"></script>
+  <script src="{% static 'assets/js/index.js' %}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  /*小屏幕导航点击关闭导航菜单*/
+    if(screen.width<1170){
+      $(".navbar-collapse a").click(function(){
+      $(".navbar-collapse").collapse("hide");
+      });
+    };
+
+    //发送用户咨询
+    $('#jsStayBtn').on('click', function(){
+                $.ajax({
+                    cache: false,
+                    type: "POST",
+                    url: "{% url 'company:add_ask' %}",
+                    data: $("#jsStayForm").serialize(),
+                    async: true,
+                    success: function(data){
+                        if(data.status == 'success'){
+                            $('#jsStayForm')[0].reset();
+                             $('#jsCompanyTips').html('你的问题我们已经收到，将很快回复您')
+                             alert("您的问题我们已经收到，将很快回复您")
+                        }else if (data.status == 'fail'){
+                            $('#jsCompanyTips').html(data.msg)
+                        }
+                    }
+                });
+            });
+})
+
+//顶部搜索栏搜索方法
+function search_click(){
+    var type = $('#jsSelectOption').attr('data-value'),
+        keywords = $('#search_keywords').val(),
+        request_url = '';
+    if(keywords == ""){
+        return
+    }
+    if(type == "category"){
+        request_url = "/products/?type=category&keywords="+keywords
+    }else if(type == "product"){
+        request_url = "/products/?type=product&keywords="+keywords
+    }else if(type == "case"){
+        request_url = "/cases/?type=case&keywords="+keywords
+    }
+    window.location.href = request_url
+}
+
+
+//顶部搜索栏搜索按钮事件
+    $('#jsSelectOption').on('click', function(){
+        var $jsSelectMenu = $('#jsSelectMenu');
+        if($jsSelectMenu.css('display') == 'block') return;
+        $jsSelectMenu.addClass('dis');
+    });
+    $('#jsSelectMenu > li').on('click', function(){
+        var searchType = $(this).attr('data-value'),
+            searchName = $(this).text(),
+            $jsSelectOption = $('#jsSelectOption');
+        $jsSelectOption.attr('data-value',searchType).text(searchName);
+        $(this).parent().removeClass('dis');
+    });
+    $(document).on('click', function(e){
+        if(e.target != $('#jsSelectOption')[0] && e.target != $('#jsSelectMenu')[0]){
+            $('#jsSelectMenu').removeClass('dis');
+        }
+    });
+
+
+    $('#jsSearchBtn').on('click',function(){
+        search_click()
+    });
+
+</script>
+
+{% block custom_js %}
+{% endblock %}
+</body>
+</html>

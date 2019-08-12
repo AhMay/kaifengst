@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+宋通产品
+{% endblock %}
+{% block active_bread %}产品列表{% endblock %}
+{% block body %}
+<!-- product show -->
+<style type="text/css">
+
+</style>
+<section id="case">
+  <div class="container">
+  <div class="col-sm-3">
+  <div class="product_s mb30">
+        <p class="case_title_s">产品类别列表<span></span></p>
+      <ul>
+          {% for category in categories %}
+            <li>
+          <a href="?ct={{ category.id }}">
+            <p>{{ category.name }}</p>
+          </a>
+        </li>
+          {% endfor %}
+      </ul>
+      </div>
+      <div class="product_x">
+        <p class="case_title">热推产品</p>
+      <ul>
+          {% for hot in hots %}
+            <li>
+            <a href="#">
+                <div class="case_cp"><a href=""><img src="{{MEDIA_URL}}{{ hot.image}}" alt=""></a> </div>
+                <p>{{ hot.name }}</p>
+             </a>
+            </li>
+          {% endfor %}
+      </ul>
+      </div>
+      <div class="contact_all">
+        <p>电话:<span>{{ side_tel }}</span></p>
+        <p>邮箱:<span>{{side_email}}</span></p>
+        <img src="{% static 'assets/img/case_13.png' %}" alt="">
+      </div>
+    </div>
+    <div class="col-sm-9">
+      <p class="product_title"><img src="{% static 'assets/img/product_img.png' %}" alt="">&nbsp; 产品展示--{{ cur_category }}</p>
+       <div class="col-sm-12 nopadding product_list">
+        {% for product in page_obj %}
+        <div align="center" class="col-sm-4">
+          <div class="case_cp"><a href="{% url 'products:product_detail' product.id %}"><img src="{{MEDIA_URL}}{{product.image}}" alt=""></a> </div>
+          <p>{{ product.name }}</p>
+        </div>
+         {% endfor %}
+       </div>
+    </div>
+
+      {% if is_paginated %}
+       <nav aria-label="Page navigation" >
+            <ul class="pagination pagination-lg pull-right">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">上一页</a></li>
+                {% else %}
+                    <li class="page-item disabled"><a class="page-link" href="#">上一页</a></li>
+                {% endif %}
+                {% for i in paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <li class="page-item active"><a class="page-link" href="#"> {{ i }} <span class="sr-only">(current)</span></a></li>
+                    {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                     {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                  <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">下一页</a></li>
+                {% else %}
+                  <li class="page-item disabled"><a class="page-link" href="#">下一页</a></li>
+                {% endif %}
+            </ul>
+            </nav>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

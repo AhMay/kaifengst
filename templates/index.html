@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body %}
+    <!-- in order to better provide quality product -->
+<section id="do_better">
+  <div class="container nopadding">
+    <div class="col-sm-4 border pt15 pb15"><img class="img-responsive" src="{% static 'images/company/company.png' %}" alt=""></div>
+    <div class="col-sm-8 pl40">
+      <strong class="text-uppercase zhuse">公司介绍</strong>
+      <div class="bs-example pl20">
+        <p>{{ company_intro }}</p>
+      </div>
+      <div class="tip">
+        <ul class="list-inline">
+          <li>
+            <a href="{% url 'products:case_list' %}">
+            <img src="{% static 'assets/img/index_10.png' %}" alt="" title='技术支持'>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'products:product_list' %}">
+            <img src="{% static 'assets/img/index_12.png'%}" alt="" title="产品列表">
+            </a>
+          </li>
+          <li>
+             <a href="{% url 'company:contactus' %}">
+            <img src="{% static 'assets/img/index_14.png' %}" alt="" title="联系我们">
+             </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- product -->
+<section id="product">
+  <div class="container">
+    <p class="pro_title zhuse"><strong>— 热推产品 —</strong></p>
+    {% for hot in hots %}
+       <div class="col-sm-4 col-xs-6">
+          <div class="pro_box"><img width="240px" height="120px" src="{{MEDIA_URL}}{{ hot.image}}"></div>
+          <div class="caption">
+            <strong class="db">{{ hot.name }}</strong>
+            <p> {{ hot.brief }} </p>
+            <p><span style="font-weight:bold;color:#006633;">产品类别</span>：
+              <a href="/products/?ct={{hot.category.id }}">{{ hot.category.name }}</a> </p>
+            <p><a href="{% url 'products:product_detail' hot.id %} " class="btn btn-huang" role="button">了解详情</a></p>
+          </div>
+    </div>
+    {% endfor %}
+
+  </div>
+</section>
+<!-- news -->
+<section id="news">
+  <div class="container">
+    <p class="pro_title zhuse"><strong>— 热门技术支持 —</strong></p>
+    <div class="col-sm-6"><img src="{% static 'assets/img/index_tu.png' %}"  width="100%" alt=""></div>
+    <div class="col-sm-6">
+      {% for case in hot_cases %}
+          <div class="media">
+        <a class="media-left" href="#">
+          {{ forloop.counter  }}
+        </a>
+        <div class="media-body">
+          <a href="{% url 'products:case_detail' case.id %}"><h4 class="media-heading zhuse"><strong>/ {{ case.title }} /</strong></h4></a>
+          {{ case.brief }}……
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

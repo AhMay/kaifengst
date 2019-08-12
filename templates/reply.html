@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户留言</title>
+     <!-- Bootstrap -->
+    <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/index.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/iconfont.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/demo.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/base.css' %}" rel="stylesheet">
+      <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<h2>处理用户留言页面</h2>
+<section id="case">
+  <div class="container">
+    <!--发布评论-->
+      <div class="row">
+       {% for ask in asks %}
+       <div class="col-md-9" id="course_note">
+                        <ul class="mod-post" id="comment-list">
+                            <li class="post-row">
+                              <div class="media">
+                                    <span target="_blank">用户：{{ask.name}}</span>
+                                </div>
+                                <div class="bd">
+                                    <div class="tit">
+
+                                        <span target="_blank">时间：{{ask.add_date}}</span>
+                                    </div>
+                                    <div class="cnt">
+                                      留言内容为:
+                                      {{ ask.message }}</div>
+                                    <div class="footer clearfix">
+                                        <span title="创建时间" class="l timeago">联系方式为：{{ask.email}}; {{ask.mobile}}</span>
+                                        <span title="创建时间" class="l timeago">状态为：{{ask.get_due_status_display}}</span>
+                                    </div>
+                                    {% if ask.due_status == 0 %}
+                                  <input type="button" id="js-ask-due_{{forloop.counter}}" onclick="hid()" class="pub-btn"  value="去处理">
+                                    {% endif %}
+                                </div>
+                            </li>
+                        </ul>
+                       <div id="js-pub-container_{{forloop.counter}}" class="issques clearfix js-form hide" >
+                        <div class="wgt-ipt-wrap pub-editor-wrap " id="js-pl-input-fake_{{forloop.counter}}">
+                            <textarea id="js-pl-textarea_{{forloop.counter}}" class="" data-value="{{ ask.id }}" placeholder="输入要回复的内容" ></textarea>
+                        </div>
+                        <input type="button" id="js-pl-submit_{{forloop.counter}}" class="pub-btn" data-value="email" onclick="reply()" value="发送邮件">
+                        <input type="button" id="js-pl-save_{{forloop.counter}}" class="pub-btn" data-value="save" onclick="reply()"  value="保存">
+                        <p class="global-errortip js-global-error"></p>
+                    </div>
+                    </div>
+       <div class="col-md-3" style="border: 1px dotted #d9dde1;">
+           {% if ask.due_status == 1 %}
+                <ul class="mod-post" >
+                      {% for reply in ask.askreply_set.all %}
+                        <li class="post-row">
+                              <div class="media">
+                                    <span target="_blank">回复人：{{ reply.user.username }}</span>
+                                </div>
+                                <div class="bd">
+                                    <div class="tit">
+
+                                        <span target="_blank">时间：{{ask.due_date}}</span>
+                                    </div>
+                                    <div class="cnt">
+                                      回复内容为:
+                                      {{ reply.message }}
+                                    </div>
+                                    <div class="footer clearfix">
+                                        <span title="创建时间" class="l timeago">回复方式为：{{reply.get_reply_method_display}}</span>
+                                    </div>
+
+                                </div>
+                            </li>
+                      {% endfor %}
+                </ul>
+
+           {% endif %}
+       </div>
+       {% endfor %}
+      </div>
+
+  </div>
+</section>
+
+<script src="{% static 'assets/js/jquery-3.1.1.min.js' %}"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+<script type="text/javascript">
+    hid = function(event){
+        event = event || window.event; ////兼容性写法
+        target_id = event.target.id
+        _index = target_id.lastIndexOf('_')
+        suffix = target_id.slice(_index)
+        toggel_element_id = '#js-pub-container' + suffix
+        $(toggel_element_id).toggleClass("hide");
+      };
+
+    reply = function(event){ // save or email
+            event = event || window.event; ////兼容性写法
+            target_id = event.target.id;
+            _index = target_id.lastIndexOf('_');
+            suffix = target_id.slice(_index);
+            comment_element_id = "#js-pl-textarea" + suffix;
+            var comments = $(comment_element_id).val();
+            var askid =$(comment_element_id).attr('data-value');
+            if(comments == ""){
+                alert("评论不能为空")
+                return
+            }
+            method = $(event.target).attr('data-value')
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "/reply_ask/" + askid +'/',
+                data: {'askid': askid, 'message': comments,'method':method, },
+                async: true,
+                beforeSend: function(xhr, settings){
+                    xhr.setRequestHeader("X-CSRFToken","{{ csrf_token }}");
+                },
+                success: function(data){
+                    if(data.status == 'fail'){
+                        if(data.msg =='用户未登录'){
+                            windows.location.href = "/xadmin/";
+                        }else{
+                            alert(data.msg);
+                        }
+                    }else if(data.status=='success'){
+                        window.location.reload();
+                    }
+                }
+            });// ajax
+        };
+  </script>
+
+</body>
+</html>
