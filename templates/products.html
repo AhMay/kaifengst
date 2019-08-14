@@ -29,8 +29,8 @@
       <ul>
           {% for hot in hots %}
             <li>
-            <a href="#">
-                <div class="case_cp"><a href=""><img src="{{MEDIA_URL}}{{ hot.image}}" alt=""></a> </div>
+            <a href="{% url 'products:product_detail' hot.id %}">
+                <div class="case_cp"><a href="{% url 'products:product_detail' hot.id %}"><img src="{{MEDIA_URL}}{{ hot.image}}" alt=""></a> </div>
                 <p>{{ hot.name }}</p>
              </a>
             </li>

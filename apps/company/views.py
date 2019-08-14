@@ -84,7 +84,7 @@ def read_company_intro():
         raise FileNotFoundError(u'公司介绍需要在路径文件中填写{0}'.format(file_name))
 
     company_intro = ''
-    with open(file_name, 'r') as intro:
+    with open(file_name, 'r', encoding='gb2312') as intro:
         company_intro = intro.read()
 
     return company_intro

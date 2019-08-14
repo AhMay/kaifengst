@@ -346,7 +346,7 @@
   /* product */
   #product{
     background: url(../img/pro_bg.png) repeat-x;
-    padding: 65px 0 20px 0;
+    padding: 10px 0 20px 0;
   }
   #product .container .pro_title{font-size: 24px;text-align: center;padding-bottom: 50px;}
   #product .container .col-sm-4{padding-bottom: 40px;}
@@ -371,7 +371,7 @@
   color: white;
 }
 /* in order to better provide quality product  */
-  #do_better{margin:70px 0;}
+  #do_better{margin:20px 0;}
   #do_better .container .col-sm-8 strong{
     font-size: 20px;
   }
